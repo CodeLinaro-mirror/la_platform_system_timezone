@@ -16,6 +16,8 @@
 
 """Generates a time zone distro file"""
 
+from __future__ import print_function
+
 import argparse
 import os
 import shutil
@@ -33,10 +35,10 @@ i18nutil.CheckDirExists(timezone_dir, 'system/timezone')
 
 def RunCreateTimeZoneDistro(properties_file):
   # Build the libraries needed.
-  subprocess.check_call(['make', '-C', android_build_top, 'time_zone_distro_tools',
+  subprocess.check_call(['make', '-C', android_build_top, 'create_time_zone_distro',
       'time_zone_distro'])
 
-  libs = [ 'time_zone_distro_tools', 'time_zone_distro' ]
+  libs = [ 'create_time_zone_distro', 'time_zone_distro' ]
   host_java_libs_dir = '%s/../common/obj/JAVA_LIBRARIES' % android_host_out_dir
   classpath_components = []
   for lib in libs:
@@ -107,8 +109,8 @@ def main():
       output_distro_dir=output_distro_dir,
       output_version_file=output_version_file)
 
-  print 'Distro file created in %s' % output_distro_dir
-  print 'Version file created as %s' % output_version_file
+  print('Distro file created in %s' % output_distro_dir)
+  print('Version file created as %s' % output_version_file)
   sys.exit(0)
 
 

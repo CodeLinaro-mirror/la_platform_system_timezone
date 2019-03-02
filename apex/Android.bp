@@ -22,11 +22,12 @@ apex {
         "apex_icu_tzdata.dat",
     ],
     key: "apex.tzdata.key",
+    certificate: "com.android.tzdata",
 }
 
 apex_key {
     name: "apex.tzdata.key",
-    public_key: "tzdata.avbpubkey",
-    private_key: "tzdata.pem",
+    public_key: "com.android.tzdata.avbpubkey",
+    private_key: "com.android.tzdata.pem",
 }
 
