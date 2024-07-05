@@ -47,3 +47,12 @@ prebuilt_etc {
     filename_from_src: true,
     sub_dir: "tzdata_module/etc/tz",
 }
+
+prebuilt_root_host {
+    name: "tzlookup.xml_host_tzdata_apex",
+    srcs: [
+        "tzlookup.xml",
+        "telephonylookup.xml",
+    ],
+    relative_install_path: "com.android.tzdata/etc/tz/versioned/8",
+}
