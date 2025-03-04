@@ -18,7 +18,6 @@ package android.tzdata.mts;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -34,7 +33,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Map;
@@ -131,10 +129,6 @@ public class TimeZoneVersionTest {
 
     @Test
     public void versionFiles_areConsistent() {
-        // Test validates data installed in /versioned/ directory. It was introduced in tzdata6,
-        // and it is targeted to Android V+ only.
-        assumeTrue(Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM);
-
         // Version in tz_version under versioned/N should be N.
         for (int version = MINIMAL_SUPPORTED_MAJOR_VERSION;
              version <= THE_LATEST_MAJOR_VERSION;
@@ -163,20 +157,7 @@ public class TimeZoneVersionTest {
     }
 
     private static int getCurrentFormatMajorVersion() {
-        // TzDataSetVersion was moved from /libcore to /external/icu in S.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            return TzDataSetVersion.currentFormatMajorVersion();
-        } else {
-            try {
-                Class<?> libcoreTzDataSetVersion =
-                        Class.forName("libcore.timezone.TzDataSetVersion");
-                Method m = libcoreTzDataSetVersion.getDeclaredMethod("currentFormatMajorVersion");
-                m.setAccessible(true);
-                return (int) m.invoke(null);
-            } catch (ReflectiveOperationException roe) {
-                throw new AssertionError(roe);
-            }
-        }
+        return TzDataSetVersion.currentFormatMajorVersion();
     }
 
     /**
@@ -224,13 +205,7 @@ public class TimeZoneVersionTest {
     }
 
     private static String readMajorFormatVersionForVersion(int version) {
-        File tzVersion;
-        if (version >= 8) {
-            tzVersion = new File(
-                    "%s/%d/tz_version".formatted(VERSIONED_DATA_LOCATION, version));
-        } else {
-            tzVersion = TIME_ZONE_MODULE_VERSION_FILE;
-        }
+        File tzVersion = new File("%s/%d/tz_version".formatted(VERSIONED_DATA_LOCATION, version));
         return readMajorFormatVersionFrom(tzVersion);
     }
 }
