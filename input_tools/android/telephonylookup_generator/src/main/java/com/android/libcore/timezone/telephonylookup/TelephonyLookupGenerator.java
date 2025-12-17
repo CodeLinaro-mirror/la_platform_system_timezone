@@ -18,6 +18,8 @@ package com.android.libcore.timezone.telephonylookup;
 import static com.android.libcore.timezone.telephonylookup.TelephonyLookupProtoFileSupport.parseTelephonyLookupTextFile;
 import static com.android.libcore.timezone.telephonylookup.TelephonyLookupXmlFile.MobileCountryOverride;
 
+import static java.util.Comparator.comparing;
+
 import com.android.libcore.timezone.telephonylookup.proto.TelephonyLookupProtoFile;
 import com.android.libcore.timezone.util.Errors;
 import com.android.libcore.timezone.util.Errors.HaltExecutionException;
@@ -28,6 +30,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -89,7 +92,10 @@ public final class TelephonyLookupGenerator {
                     extractNetworks(mobileCountriesIn);
 
             List<TelephonyLookupProtoFile.Network> networksIn =
-                    telephonyLookupIn.getNetworksList();
+                    telephonyLookupIn.getNetworksList().stream()
+                            .sorted(comparing(TelephonyLookupProtoFile.Network::getMcc)
+                                    .thenComparing(TelephonyLookupProtoFile.Network::getMnc))
+                            .toList();
 
             validateNetworks(networksIn, errors);
             errors.throwIfError("One or more validation errors encountered");
@@ -337,7 +343,7 @@ public final class TelephonyLookupGenerator {
         knownIsoCountryCodes =
                 knownIsoCountryCodes.stream()
                         .map(x -> x.toLowerCase(Locale.ROOT))
-                        .collect(Collectors.toList());
+                        .toList();
         return new HashSet<>(knownIsoCountryCodes);
     }
 
