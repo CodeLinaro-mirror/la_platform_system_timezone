@@ -315,6 +315,15 @@ public class TimeZoneRulesTest {
         assertTrue(winnipeg.inDaylightTime(new Date(1796083200000L)));
     }
 
+    @Test
+    public void testCuba() {
+        TimeZone havana = TimeZone.getTimeZone("America/Havana");
+        // In 2026f, Cuba stays on DST (UTC-4) through the 2026-2027 winter instead of falling
+        // back on 1 Nov 2026, and returns to standard time (UTC-5) on 7 Nov 2027.
+        assertTrue(havana.inDaylightTime(new Date(1796083200000L))); // 1 Dec 2026
+        assertFalse(havana.inDaylightTime(new Date(1827619200000L))); // 1 Dec 2027
+    }
+
     /**
      * ICU's time zone IDs may be a superset of IDs available via other APIs.
      */
